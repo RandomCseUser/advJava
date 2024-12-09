@@ -1,4 +1,408 @@
 const data = {
+  1: `Registration Page
+
+package myPack;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.*;
+
+public class Greeting extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String pass = request.getParameter("pass");
+        String repass = request.getParameter("repass");
+        response.getWriter().println("<html><body>");
+        if (pass.equals(repass) && pass.length() >= 8) {
+            response.getWriter().println("<h1>Registered, " + name + "!</h1>");
+        } else {
+            response.getWriter().println("<h1>Enter matching passwords of length at least 8, " + name + "!</h1>");
+        }
+        response.getWriter().println("</body></html>");
+    }
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Registration Page</h1>
+    <form action="Greeting" method="POST">
+        <label for="name">UserName:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="pass">Password:</label>
+        <input type="password" id="pass" name="pass" required>
+        <label for="repass">Re-enter Password:</label>
+        <input type="password" id="repass" name="repass" required>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>`,
+  2: `Voting Page
+
+package myPack;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.*;
+
+public class Voting extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String fname = request.getParameter("fname");
+        String lname = request.getParameter("lname");
+        String age = request.getParameter("age");
+        response.getWriter().println("<html><body>");
+        if (Integer.parseInt(age) >= 18) {
+            response.getWriter().println("<h1>You are eligible, " + fname + " " + lname + "!</h1>");
+        } else {
+            response.getWriter().println("<h1>You are not eligible, " + fname + " " + lname + "!</h1>");
+        }
+        response.getWriter().println("</body></html>");
+    }
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote</title>
+</head>
+<body>
+    <h1>Voting Page</h1>
+    <form action="Voting" method="POST">
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname" required>
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname" required>
+        <label for="mail">E-mail:</label>
+        <input type="text" id="mail" name="mail" required>
+        <label for="age">Age:</label>
+        <input type="text" id="age" name="age" required>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>`,
+  3: `Calculate CGPA
+
+package myPack;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.*;
+
+public class Calculate extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        float sum = 0;
+        float avg = 0;
+        for (int i = 0; i < 4; i++) {
+            sum += Float.parseFloat(request.getParameter("cgpa" + Integer.toString(i + 1)));
+        }
+        avg = sum / 4;
+        response.getWriter().println("<html><body>");
+        response.getWriter().println("<h1>The CGPA is " + String.valueOf(avg) + "</h1>");
+        response.getWriter().println("</body></html>");
+    }
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Calculate CGPA</title>
+</head>
+<body>
+    <form method="post" action="Calculate">
+        <h1>CGPA DETAILS :</h1>
+        <p>Enter USN :</p>
+        <input name="usn" type="text" required>
+        <p>Enter name :</p>
+        <input name="name" type="text" required>
+        <p>Enter all SGPAs :</p>
+        <input name="cgpa1" type="text" required>
+        <input name="cgpa2" type="text" required>
+        <input name="cgpa3" type="text" required>
+        <input name="cgpa4" type="text" required>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>`,
+  4: `Department
+
+package AdvJava.week3;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class P1DepartmentDB {
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/dbName", USER = "root", PASS = "";
+
+    public static void main(String[] args) {
+        Connection conn = null;
+        Statement stmt = null;
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS Department (" +
+                    "Dept_ID INT PRIMARY KEY, " +
+                    "Name VARCHAR(100), " +
+                    "Year_Established INT, " +
+                    "Head_Name VARCHAR(100), " +
+                    "No_of_Employees INT)";
+            stmt.executeUpdate(createTableSQL);
+            System.out.println("Table 'Department' created or already exists.");
+            String insertDataSQL = "INSERT INTO Department (Dept_ID, Name, Year_Established, Head_Name, No_of_Employees) VALUES " +
+                    "(1, 'CSE', 2000, 'Anika', 30), " +
+                    "(2, 'ISE', 2000, 'Rahul', 33), " +
+                    "(3, 'Mech', 1995, 'Priya', 29), " +
+                    "(4, 'Civil', 1995, 'Vivek', 35)";
+            stmt.executeUpdate(insertDataSQL);
+            System.out.println("Sample data inserted into 'Department' table.");
+            String queryAllDepartments = "SELECT * FROM Department";
+            try (ResultSet rsAll = stmt.executeQuery(queryAllDepartments)) {
+                System.out.println("\nAll Departments:");
+                printResultSet(rsAll);
+            }
+            System.out.print("\nEnter the year to filter departments: ");
+            int year = sc.nextInt();
+            String queryByYear = "SELECT * FROM Department WHERE Year_Established = ?";
+            try (PreparedStatement pStmt = conn.prepareStatement(queryByYear)) {
+                pStmt.setInt(1, year);
+                try (ResultSet rsByYear = pStmt.executeQuery()) {
+                    System.out.println("\nDepartments established in the year " + year + ":");
+                    printResultSet(rsByYear);
+                }
+            }
+            System.out.print("\nEnter Dept_ID to filter departments: ");
+            int deptId = sc.nextInt();
+            sc.nextLine();
+            System.out.print("Enter Department Name to filter departments: ");
+            String deptName = sc.nextLine();
+            String queryByIdAndName = "SELECT * FROM Department WHERE Dept_ID = ? AND Name = ?";
+            try (PreparedStatement pStmt = conn.prepareStatement(queryByIdAndName)) {
+                pStmt.setInt(1, deptId);
+                pStmt.setString(2, deptName);
+                try (ResultSet rsByIdAndName = pStmt.executeQuery()) {
+                    System.out.println("\nDepartments with Dept_ID " + deptId + " and Name " + deptName + ":");
+                    printResultSet(rsByIdAndName);
+                }
+            }
+            System.out.print("\nEnter new Dept_ID: ");
+            int newDeptId = sc.nextInt();
+            sc.nextLine();
+            System.out.print("Enter new Department Name: ");
+            String newDeptName = sc.nextLine();
+            System.out.print("Enter Year Established: ");
+            int newYearEstablished = sc.nextInt();
+            sc.nextLine();
+            System.out.print("Enter Head Name: ");
+            String newHeadName = sc.nextLine();
+            System.out.print("Enter Number of Employees: ");
+            int newNoOfEmployees = sc.nextInt();
+            String insertSQL = "INSERT INTO Department (Dept_ID, Name, Year_Established, Head_Name, No_of_Employees) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement pStmt = conn.prepareStatement(insertSQL)) {
+                pStmt.setInt(1, newDeptId);
+                pStmt.setString(2, newDeptName);
+                pStmt.setInt(3, newYearEstablished);
+                pStmt.setString(4, newHeadName);
+                pStmt.setInt(5, newNoOfEmployees);
+                pStmt.executeUpdate();
+                System.out.println("New department inserted successfully.");
+            }
+            String queryNewDept = "SELECT * FROM Department WHERE Dept_ID = ?";
+            try (PreparedStatement pStmt = conn.prepareStatement(queryNewDept)) {
+                pStmt.setInt(1, newDeptId);
+                try (ResultSet rsNewDept = pStmt.executeQuery()) {
+                    System.out.println("\nInserted Department:");
+                    printResultSet(rsNewDept);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            sc.close();
+        }
+    }
+
+    private static void printResultSet(ResultSet rs) throws SQLException {
+        System.out.println("ID\tName\tYear_Established\tHead_Name\tNo_of_Employees");
+        while (rs.next()) {
+            System.out.println(rs.getInt("Dept_ID") + "\t" +
+                    rs.getString("Name") + "\t\t" +
+                    rs.getInt("Year_Established") + "\t\t" +
+                    rs.getString("Head_Name") + "\t\t" +
+                    rs.getInt("No_of_Employees"));
+        }
+    }
+}`,
+  5: `SubjectDB
+
+package AdvJava.week3;
+
+import java.sql.*;
+
+public class P2SubjectDB {
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/dbName", USER = "root", PASS = "";
+
+    public static void main(String[] args) {
+        Connection conn = null;
+        Statement stmt = null;
+        PreparedStatement pStmt = null;
+
+        try {
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS Subject (" +
+                    "Code VARCHAR(10) PRIMARY KEY, " +
+                    "Name VARCHAR(100), " +
+                    "Department VARCHAR(100), " +
+                    "Credits INT)";
+            stmt.executeUpdate(createTableSQL);
+            System.out.println("Table 'Subject' created or already exists.");
+            String insertDataSQL = "INSERT INTO Subject (Code, Name, Department, Credits) VALUES " +
+                    "('CS50', 'System Programming', 'CSE', 3), " +
+                    "('CSL57', 'Database Sys Lab', 'CSE', 1), " +
+                    "('CSL56', 'Java  Programming  Lab', 'CSE', 1), " +
+                    "('HS59', 'Environmental Studies', 'Civil', 0)";
+            stmt.executeUpdate(insertDataSQL);
+            System.out.println("Sample data inserted into 'Subject' table.");
+            String selectSQL = "SELECT * FROM Subject WHERE Code = 'CSL56'";
+            ResultSet rs = stmt.executeQuery(selectSQL);
+            if (rs.next()) {
+                rs.updateString("Name", "Adv Java Prog Lab");
+                rs.updateRow();
+                System.out.println("\nSubject name updated successfully.");
+            }
+            String deleteSQL = "DELETE FROM Subject WHERE Name = ?";
+            pStmt = conn.prepareStatement(deleteSQL);
+            pStmt.setString(1, "System Programming");
+            int rowsAffected = pStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("\nSubject 'System Programming' deleted successfully.");
+            } else {
+                System.out.println("\nSubject 'System Programming' not found.");
+            }
+            String queryAllSubjects = "SELECT * FROM Subject";
+            rs = stmt.executeQuery(queryAllSubjects);
+            System.out.println("\nCode\tName\t\t\tDepartment\tCredits");
+            while (rs.next()) {
+                System.out.println(rs.getString("Code") + "\t" +
+                        rs.getString("Name") + "\t" +
+                        rs.getString("Department") + "\t\t" +
+                        rs.getInt("Credits"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (pStmt != null) pStmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}`,
+  6: `MoviesDB
+
+package AdvJava.week3;
+
+import java.sql.*;
+
+public class P3MoviesDB {
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/dbName", USER = "root", PASS = "";
+
+    public static void main(String[] args) {
+        Connection conn = null;
+        Statement stmt = null;
+        PreparedStatement pStmt = null;
+
+        try {
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS Movies (" +
+                    "ID INT PRIMARY KEY, " +
+                    "Movie_Name VARCHAR(100), " +
+                    "Genre VARCHAR(50), " +
+                    "IMDB_Rating FLOAT, " +
+                    "Year INT)";
+            stmt.executeUpdate(createTableSQL);
+            System.out.println("Table 'Movies' created or already exists.");
+            String insertDataSQL = "INSERT INTO Movies (ID, Movie_Name, Genre, IMDB_Rating, Year) VALUES " +
+                    "(1, 'Inception', 'Sci-Fi', 8.8, 2010), " +
+                    "(2, 'Orphan', 'Mystery', 7.0, 2009), " +
+                    "(3, 'Interstellar', 'Sci-Fi', 8.6, 2014), " +
+                    "(4, 'La La Land', 'Musical', 8.0, 2016), " +
+                    "(5, 'Gifted', 'Drama', 7.6, 2017)";
+            stmt.executeUpdate(insertDataSQL);
+            System.out.println("Sample data inserted into 'Movies' table.");
+            String queryAllMovies = "SELECT * FROM Movies";
+            ResultSet rs = stmt.executeQuery(queryAllMovies);
+            printResultSet(rs);
+            if (rs.absolute(5)) {
+                System.out.println("\nDetails of 5th Movie:");
+                System.out.println("ID\tMovie_Name\tGenre\tIMDB_Rating\tYear");
+                System.out.println(rs.getInt("ID") + "\t" +
+                        rs.getString("Movie_Name") + "\t" +
+                        rs.getString("Genre") + "\t\t" +
+                        rs.getFloat("IMDB_Rating") + "\t" +
+                        rs.getInt("Year"));
+            }
+            String insertSQL = "INSERT INTO Movies (ID, Movie_Name, Genre, IMDB_Rating, Year) VALUES (?, ?, ?, ?, ?)";
+            pStmt = conn.prepareStatement(insertSQL);
+            pStmt.setInt(1, 6);
+            pStmt.setString(2, "Morning Glory");
+            pStmt.setString(3, "Rom-Com");
+            pStmt.setFloat(4, 6.5f);
+            pStmt.setInt(5, 2010);
+            pStmt.executeUpdate();
+            System.out.println("\nNew movie inserted successfully.");
+            rs = stmt.executeQuery(queryAllMovies);
+            printResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (pStmt != null) pStmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void printResultSet(ResultSet rs) throws SQLException {
+        System.out.println("\nAll movies:\nID\tMovie_Name\tGenre\tIMDB_Rating\tYear");
+        while (rs.next()) {
+            System.out.println(rs.getInt("ID") + "\t" +
+                    rs.getString("Movie_Name") + "\t" +
+                    rs.getString("Genre") + "\t\t" +
+                    rs.getFloat("IMDB_Rating") + "\t" +
+                    rs.getInt("Year"));
+        }
+    }
+}`,
   "2a": `package AdvJava.week2;
 
 import java.sql.*;
